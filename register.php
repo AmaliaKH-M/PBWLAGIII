@@ -20,6 +20,8 @@ if ($_POST) {
     // Validation
     if (empty($nama) || empty($email) || empty($password) || empty($nomor_wa) || empty($lokasi_kos)) {
         $error = 'Semua field harus diisi';
+    } elseif (!validateSTISEmail($email)) {
+        $error = 'Email harus menggunakan format [8 digit NIM]@stis.ac.id';
     } elseif ($password !== $confirm_password) {
         $error = 'Password tidak cocok';
     } elseif (strlen($password) < 6) {
@@ -28,7 +30,15 @@ if ($_POST) {
         $user_id = $user->register($nama, $email, $password, $nomor_wa, $lokasi_kos);
         
         if ($user_id) {
-            $success = 'Akun berhasil dibuat! Silakan login.';
+            // Auto-login after registration
+            $user_data = $user->getUserById($user_id);
+            $_SESSION['user_id'] = $user_data['id_user'];
+            $_SESSION['nama'] = $user_data['nama'];
+            $_SESSION['email'] = $user_data['email'];
+            $_SESSION['role'] = $user_data['role'];
+            
+            header('Location: index.php');
+            exit;
         } else {
             $error = 'Email sudah terdaftar atau terjadi kesalahan';
         }
@@ -72,8 +82,9 @@ if ($_POST) {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="nama@email.com" required value="<?= $_POST['email'] ?? '' ?>">
+                        <label class="form-label">Email STIS</label>
+                        <input type="email" name="email" class="form-control" placeholder="12345678@stis.ac.id" required value="<?= $_POST['email'] ?? '' ?>">
+                        <small class="form-text text-muted">Gunakan format: [8 digit NIM]@stis.ac.id</small>
                     </div>
 
                     <div class="form-group">
@@ -83,7 +94,16 @@ if ($_POST) {
 
                     <div class="form-group">
                         <label class="form-label">Lokasi Kos</label>
-                        <input type="text" name="lokasi_kos" class="form-control" placeholder="Nama kos, Kota" required value="<?= $_POST['lokasi_kos'] ?? '' ?>">
+                        <select name="lokasi_kos" class="form-control" required>
+                            <option value="">Pilih lokasi kos Anda</option>
+                            <?php 
+                            $kos_locations = $user->getKosLocations();
+                            foreach ($kos_locations as $location): ?>
+                                <option value="<?= $location ?>" <?= (isset($_POST['lokasi_kos']) && $_POST['lokasi_kos'] == $location) ? 'selected' : '' ?>>
+                                    <?= $location ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="form-group">
