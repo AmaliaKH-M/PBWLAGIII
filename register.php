@@ -1,9 +1,15 @@
 <?php
+session_start();
 require_once 'config/kosmarket_db.php';
 require_once 'classes/User.php';
 
 $error = '';
 $success = '';
+
+// Email validation function for STIS emails (9 digits)
+function validateSTISEmail($email) {
+    return preg_match('/^[0-9]{9}@stis\.ac\.id$/', $email);
+}
 
 if ($_POST) {
     $database = new Database();
@@ -75,7 +81,7 @@ if ($_POST) {
                     <div class="alert alert-success"><?= $success ?></div>
                 <?php endif; ?>
 
-                <form method="POST" data-validate>
+                <form method="POST">
                     <div class="form-group">
                         <label class="form-label">Nama Lengkap</label>
                         <input type="text" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required value="<?= $_POST['nama'] ?? '' ?>">
@@ -93,17 +99,9 @@ if ($_POST) {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Lokasi Kos</label>
-                        <select name="lokasi_kos" class="form-control" required>
-                            <option value="">Pilih lokasi kos Anda</option>
-                            <?php 
-                            $kos_locations = $user->getKosLocations();
-                            foreach ($kos_locations as $location): ?>
-                                <option value="<?= $location ?>" <?= (isset($_POST['lokasi_kos']) && $_POST['lokasi_kos'] == $location) ? 'selected' : '' ?>>
-                                    <?= $location ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label class="form-label">Alamat Kos Lengkap</label>
+                        <input type="text" name="lokasi_kos" class="form-control" placeholder="Contoh: Kos Melati, Jl. Otto Iskandardinata No.12, Jakarta Timur" required value="<?= $_POST['lokasi_kos'] ?? '' ?>">
+                        <small class="form-text text-muted">Tulis alamat kos lengkap Anda</small>
                     </div>
 
                     <div class="form-group">

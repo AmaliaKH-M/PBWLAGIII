@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config/kosmarket_db.php';
 require_once 'classes/User.php';
 
@@ -62,7 +63,7 @@ if ($_POST) {
                     <div class="alert alert-success"><?= $success ?></div>
                 <?php endif; ?>
 
-                <form method="POST" data-validate>
+                <form method="POST">
                     <div class="form-group">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" placeholder="nama@email.com" required value="<?= $_POST['email'] ?? '' ?>">
