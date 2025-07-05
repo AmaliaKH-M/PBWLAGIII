@@ -1,4 +1,4 @@
-/* KosMarket CSS - Brand Colors and Styling */
+/* KosMarket CSS - Brand Colors and Styling - Pure CSS Only */
 :root {
     --primary-peach: #FFCDB2;
     --secondary-peach: #FFB4A2;
@@ -23,18 +23,19 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Arial', 'Helvetica', sans-serif;
     line-height: 1.6;
     color: var(--text-dark);
     background-color: var(--white);
 }
 
-/* Logo Styling */
+/* Logo Styling with Script-like appearance */
 .logo-font {
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
     font-weight: 700;
     color: var(--text-dark);
     text-decoration: none;
+    font-style: italic;
 }
 
 .logo .heart {
@@ -109,6 +110,89 @@ body {
     outline: none;
     border-color: var(--primary-peach);
     box-shadow: 0 0 0 3px rgba(255, 205, 178, 0.2);
+}
+
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border: 2px solid var(--border-gray);
+    border-top: none;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 4px 12px var(--shadow);
+    z-index: 1000;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-gray);
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.suggestion-item:hover {
+    background-color: var(--light-gray);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Icon styling for pure CSS icons */
+.icon, .step-icon, .category-emoji, .heart, .location-icon, .view-icon, .contact-icon, 
+.login-icon, .register-icon, .hamburger {
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+.search-icon {
+    font-size: 1.2rem;
+}
+
+.heart {
+    color: #e74c3c;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn.active .heart {
+    color: #e74c3c;
+}
+
+.wishlist-btn:hover .heart {
+    transform: scale(1.2);
+}
+
+.hamburger {
+    font-size: 1.5rem;
+}
+
+.category-emoji, .step-icon {
+    font-size: 2rem;
+}
+
+.contact-icon, .location-icon {
+    margin-right: 0.5rem;
+}
+
+.view-icon, .login-icon, .register-icon {
+    margin-right: 0.3rem;
 }
 
 .nav-menu {

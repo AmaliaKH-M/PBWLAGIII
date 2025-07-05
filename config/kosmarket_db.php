@@ -53,4 +53,19 @@ function timeAgo($datetime) {
     if ($time < 31536000) return floor($time/2592000) . ' bulan lalu';
     return floor($time/31536000) . ' tahun lalu';
 }
+
+function getCategoryEmoji($category_name) {
+    $emojis = [
+        'Pakaian' => '👕',
+        'Elektronik' => '💻',
+        'Buku & Alat Tulis' => '📚',
+        'Furnitur' => '🪑',
+        'Olahraga' => '⚽',
+        'Kecantikan' => '💄',
+        'Makanan & Minuman' => '🍕',
+        'Lainnya' => '📦'
+    ];
+    
+    return $emojis[$category_name] ?? '📦';
+}
 ?>

@@ -25,11 +25,8 @@ if (isLoggedIn()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KosMarket - Jual Beli Barang Kosan Preloved</title>
+    <meta name="description" content="Platform jual-beli dan donasi barang preloved khusus komunitas STIS">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -40,25 +37,26 @@ if (isLoggedIn()) {
 
             <div class="search-box">
                 <form action="products.php" method="GET" class="search-form">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" name="search" placeholder="Cari barang preloved..." value="<?= $_GET['search'] ?? '' ?>">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" name="search" placeholder="Cari barang preloved..." value="<?= $_GET['search'] ?? '' ?>" autocomplete="off" id="search-input">
+                    <div class="search-suggestions" id="search-suggestions"></div>
                 </form>
             </div>
 
             <ul class="nav-menu">
                 <li><a href="products.php">Semua Produk</a></li>
                 <?php if (isLoggedIn()): ?>
-                    <li><a href="sell.php" class="btn btn-primary"><i class="fas fa-plus"></i> Jual/Donasi</a></li>
-                    <li><a href="wishlist.php"><i class="far fa-heart"></i></a></li>
+                    <li><a href="sell.php" class="btn btn-primary"><span class="icon">+</span> Jual/Donasi</a></li>
+                    <li><a href="wishlist.php"><span class="icon">♡</span></a></li>
                     <li>
                         <a href="cart.php" class="cart-badge">
-                            <i class="fas fa-shopping-cart"></i>
+                            <span class="icon">🛒</span>
                             <?php if ($cart_count > 0): ?>
                                 <span class="badge"><?= $cart_count ?></span>
                             <?php endif; ?>
                         </a>
                     </li>
-                    <li><a href="dashboard.php"><i class="fas fa-user"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php"><span class="icon">👤</span> Dashboard</a></li>
                     <li><a href="logout.php">Keluar</a></li>
                 <?php else: ?>
                     <li><a href="login.php">Masuk</a></li>
@@ -67,7 +65,7 @@ if (isLoggedIn()) {
             </ul>
 
             <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
+                <span class="hamburger">☰</span>
             </button>
         </div>
 
@@ -75,10 +73,10 @@ if (isLoggedIn()) {
             <ul class="nav-menu">
                 <li><a href="products.php">Semua Produk</a></li>
                 <?php if (isLoggedIn()): ?>
-                    <li><a href="sell.php"><i class="fas fa-plus"></i> Jual/Donasi</a></li>
-                    <li><a href="wishlist.php"><i class="far fa-heart"></i> Wishlist</a></li>
-                    <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Keranjang (<?= $cart_count ?>)</a></li>
-                    <li><a href="dashboard.php"><i class="fas fa-user"></i> Dashboard</a></li>
+                    <li><a href="sell.php"><span class="icon">+</span> Jual/Donasi</a></li>
+                    <li><a href="wishlist.php"><span class="icon">♡</span> Wishlist</a></li>
+                    <li><a href="cart.php"><span class="icon">🛒</span> Keranjang (<?= $cart_count ?>)</a></li>
+                    <li><a href="dashboard.php"><span class="icon">👤</span> Dashboard</a></li>
                     <li><a href="logout.php">Keluar</a></li>
                 <?php else: ?>
                     <li><a href="login.php">Masuk</a></li>
@@ -106,7 +104,8 @@ if (isLoggedIn()) {
                 <div class="categories-grid">
                     <?php foreach ($categories as $category): ?>
                         <a href="products.php?kategori=<?= $category['id_kategori'] ?>" class="category-card">
-                            <div class="category-icon" style="background: <?= $category['color'] ?>"> <i class="fas fa-<?= $category['icon'] ?>"></i>
+                            <div class="category-icon" style="background: <?= $category['color'] ?>">
+                                <span class="category-emoji"><?= getCategoryEmoji($category['nama_kategori']) ?></span>
                             </div>
                             <h3><?= $category['nama_kategori'] ?></h3>
                         </a>
@@ -137,7 +136,7 @@ if (isLoggedIn()) {
 
                             <?php if (isLoggedIn()): ?>
                                 <button class="wishlist-btn" data-product-id="<?= $item['id_produk'] ?>">
-                                    <i class="far fa-heart"></i>
+                                    <span class="heart">♡</span>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -158,14 +157,14 @@ if (isLoggedIn()) {
                             <?php endif; ?>
 
                             <div class="card-location">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="location-icon">📍</span>
                                 <span><?= htmlspecialchars($item['lokasi_penjual']) ?></span>
                             </div>
 
                             <div class="card-footer">
                                 <span class="card-seller">oleh <?= htmlspecialchars($item['nama_penjual']) ?></span>
                                 <a href="product.php?id=<?= $item['id_produk'] ?>" class="btn btn-primary">
-                                    <i class="fas fa-eye"></i> Lihat
+                                    <span class="view-icon">👁</span> Lihat
                                 </a>
                             </div>
                         </div>
@@ -182,7 +181,7 @@ if (isLoggedIn()) {
                 <div class="categories-grid">
                     <div class="category-card">
                         <div class="category-icon" style="background: var(--primary-peach)">
-                            <i class="fas fa-user-plus"></i>
+                            <span class="step-icon">👤</span>
                         </div>
                         <h3>Daftar Akun</h3>
                         <p>Buat akun dengan email dan lengkapi profil kamu</p>
@@ -190,7 +189,7 @@ if (isLoggedIn()) {
                     
                     <div class="category-card">
                         <div class="category-icon" style="background: var(--secondary-peach)">
-                            <i class="fas fa-upload"></i>
+                            <span class="step-icon">📤</span>
                         </div>
                         <h3>Upload Barang</h3>
                         <p>Foto barangmu dan pilih mau dijual atau didonasi</p>
@@ -198,7 +197,7 @@ if (isLoggedIn()) {
                     
                     <div class="category-card">
                         <div class="category-icon" style="background: var(--tertiary-rose)">
-                            <i class="fas fa-search"></i>
+                            <span class="step-icon">🔍</span>
                         </div>
                         <h3>Cari & Temukan</h3>
                         <p>Browse barang yang kamu butuhkan dari berbagai kategori</p>
@@ -206,7 +205,7 @@ if (isLoggedIn()) {
                     
                     <div class="category-card">
                         <div class="category-icon" style="background: var(--quaternary-mauve)">
-                            <i class="fab fa-whatsapp"></i>
+                            <span class="step-icon">💬</span>
                         </div>
                         <h3>Hubungi Penjual</h3>
                         <p>Chat langsung via WhatsApp untuk nego dan transaksi</p>
@@ -244,15 +243,15 @@ if (isLoggedIn()) {
                 <div class="footer-section">
                     <h3>Kontak</h3>
                     <ul>
-                        <li><i class="fas fa-envelope"></i> info@kosmarket.com</li>
-                        <li><i class="fas fa-phone"></i> +62 812-3456-7890</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Malang, Jawa Timur</li>
+                        <li><span class="contact-icon">📧</span> info@kosmarket.com</li>
+                        <li><span class="contact-icon">📞</span> +62 812-3456-7890</li>
+                        <li><span class="contact-icon">📍</span> Malang, Jawa Timur</li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2024 KosMarket. Dibuat dengan <i class="fas fa-heart" style="color: #e74c3c;"></i> untuk komunitas mahasiswa.</p>
+                <p>&copy; 2024 KosMarket. Dibuat dengan <span style="color: #e74c3c;">❤️</span> untuk komunitas mahasiswa.</p>
             </div>
         </div>
     </footer>

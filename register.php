@@ -52,8 +52,8 @@ if ($_POST) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar - KosMarket</title>
+    <meta name="description" content="Daftar akun KosMarket dengan email STIS untuk bergabung dengan komunitas">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container" style="max-width: 500px; margin: 3rem auto; padding: 2rem;">
@@ -117,7 +117,7 @@ if ($_POST) {
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 mb-3">
-                        <i class="fas fa-user-plus"></i> Daftar
+                        <span class="register-icon">📝</span> Daftar
                     </button>
                 </form>
 

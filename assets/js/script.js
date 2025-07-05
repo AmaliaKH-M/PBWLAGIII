@@ -11,16 +11,96 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Search functionality
+    // Search functionality with live suggestions
     const searchForm = document.querySelector('.search-form');
-    if (searchForm) {
+    const searchInput = document.getElementById('search-input');
+    const searchSuggestions = document.getElementById('search-suggestions');
+    
+    if (searchForm && searchInput && searchSuggestions) {
+        // Handle form submission
         searchForm.addEventListener('submit', function(e) {
-            const searchInput = this.querySelector('input[name="search"]');
             if (!searchInput.value.trim()) {
                 e.preventDefault();
                 searchInput.focus();
+            } else {
+                searchSuggestions.style.display = 'none';
             }
         });
+        
+        // Live search suggestions
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                searchSuggestions.style.display = 'none';
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                fetchSearchSuggestions(query);
+            }, 300);
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchForm.contains(e.target)) {
+                searchSuggestions.style.display = 'none';
+            }
+        });
+        
+        // Show suggestions when input is focused
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2) {
+                searchSuggestions.style.display = 'block';
+            }
+        });
+    }
+    
+    // Fetch search suggestions
+    function fetchSearchSuggestions(query) {
+        fetch(`ajax/search_suggestions.php?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                displaySearchSuggestions(data);
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                searchSuggestions.style.display = 'none';
+            });
+    }
+    
+    // Display search suggestions
+    function displaySearchSuggestions(suggestions) {
+        if (!suggestions || suggestions.length === 0) {
+            searchSuggestions.style.display = 'none';
+            return;
+        }
+        
+        searchSuggestions.innerHTML = '';
+        
+        suggestions.forEach(suggestion => {
+            const item = document.createElement('div');
+            item.className = 'suggestion-item';
+            
+            const icon = suggestion.type === 'category' ? '📂' : '🛍️';
+            item.innerHTML = `<span class="suggestion-icon">${icon}</span> ${suggestion.title}`;
+            
+            item.addEventListener('click', function() {
+                if (suggestion.type === 'category') {
+                    window.location.href = `products.php?kategori=${suggestion.id}`;
+                } else {
+                    searchInput.value = suggestion.title;
+                    searchForm.submit();
+                }
+            });
+            
+            searchSuggestions.appendChild(item);
+        });
+        
+        searchSuggestions.style.display = 'block';
     }
 
     // Email validation for STIS format
