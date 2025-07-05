@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'config/kosmarket_db.php';
 require_once 'config/helpers.php';
 require_once 'classes/Product.php';

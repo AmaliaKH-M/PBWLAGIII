@@ -25,17 +25,13 @@ class User {
         // Hash password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
-        // Generate angkatan from email
-        $angkatan = generateAngkatan($email);
-
         // Insert user
-        $stmt = $this->conn->prepare("INSERT INTO " . $this->table . " (nama, email, password, nomor_wa, lokasi_kos, angkatan) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $this->conn->prepare("INSERT INTO " . $this->table . " (nama, email, password, nomor_wa, lokasi_kos) VALUES (?, ?, ?, ?, ?)");
         $stmt->bindParam(1, $nama);
         $stmt->bindParam(2, $email);
         $stmt->bindParam(3, $hashed_password);
         $stmt->bindParam(4, $nomor_wa);
         $stmt->bindParam(5, $lokasi_kos);
-        $stmt->bindParam(6, $angkatan);
 
         if ($stmt->execute()) {
             return $this->conn->lastInsertId();
@@ -119,7 +115,7 @@ class User {
     }
 
     public function getAllUsers($limit = null, $offset = null) {
-        $sql = "SELECT id_user, nama, email, nomor_wa, lokasi_kos, angkatan, role, created_at FROM " . $this->table . " ORDER BY created_at DESC";
+        $sql = "SELECT id_user, nama, email, nomor_wa, lokasi_kos, role, created_at FROM " . $this->table . " ORDER BY created_at DESC";
         
         if ($limit) {
             $sql .= " LIMIT " . $limit;
