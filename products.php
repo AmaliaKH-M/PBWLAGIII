@@ -1,8 +1,30 @@
 <?php
+session_start();
 require_once 'config/kosmarket_db.php';
 require_once 'classes/Product.php';
-require_once 'classes/Cart.php';
-require_once 'classes/Wishlist.php';
+
+// Helper functions
+function isLoggedIn() {
+    return isset($_SESSION['user_id']);
+}
+
+function formatRupiah($angka) {
+    return 'Rp ' . number_format($angka, 0, ',', '.');
+}
+
+function getCategoryEmoji($category) {
+    $emojis = [
+        'Elektronik' => '📱',
+        'Pakaian' => '👕',
+        'Buku & Alat Tulis' => '📚',
+        'Furniture' => '🪑',
+        'Peralatan Dapur' => '🍳',
+        'Olahraga' => '⚽',
+        'Kecantikan' => '💄',
+        'Lainnya' => '📦'
+    ];
+    return $emojis[$category] ?? '📦';
+}
 
 $database = new Database();
 $db = $database->getConnection();
@@ -12,17 +34,16 @@ $product = new Product($db);
 $search = $_GET['search'] ?? '';
 $kategori = $_GET['kategori'] ?? '';
 $tipe = $_GET['tipe'] ?? '';
-$page = (int)($_GET['page'] ?? 1);
-$limit = 12;
-$offset = ($page - 1) * $limit;
+$kondisi = $_GET['kondisi'] ?? '';
 
-// Get products with filters
-$products = $product->getAll(null, $kategori, $tipe, $search);
+// Get all products with filters
+$products = $product->getAll(50, $search, $kategori, $tipe, $kondisi);
 $categories = $product->getCategories();
 
 // Get cart count for logged in user
 $cart_count = 0;
 if (isLoggedIn()) {
+    require_once 'classes/Cart.php';
     $cart = new Cart($db);
     $cart_count = $cart->getItemCount($_SESSION['user_id']);
 }
@@ -34,11 +55,10 @@ if (isLoggedIn()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semua Produk - KosMarket</title>
+    <meta name="description" content="Browse semua produk preloved dari komunitas STIS">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
             <a href="index.php" class="logo logo-font">
@@ -47,31 +67,25 @@ if (isLoggedIn()) {
 
             <div class="search-box">
                 <form action="products.php" method="GET" class="search-form">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" name="search" placeholder="Cari barang preloved..." value="<?= htmlspecialchars($search) ?>">
-                    <?php if ($kategori): ?>
-                        <input type="hidden" name="kategori" value="<?= $kategori ?>">
-                    <?php endif; ?>
-                    <?php if ($tipe): ?>
-                        <input type="hidden" name="tipe" value="<?= $tipe ?>">
-                    <?php endif; ?>
+                    <span class="search-icon">🔍</span>
+                    <input type="text" name="search" placeholder="Cari barang preloved..." value="<?= htmlspecialchars($search) ?>" autocomplete="off">
                 </form>
             </div>
 
             <ul class="nav-menu">
-                <li><a href="products.php">Semua Produk</a></li>
+                <li><a href="products.php" class="active">Semua Produk</a></li>
                 <?php if (isLoggedIn()): ?>
-                    <li><a href="sell.php" class="btn btn-primary"><i class="fas fa-plus"></i> Jual/Donasi</a></li>
-                    <li><a href="wishlist.php"><i class="far fa-heart"></i></a></li>
+                    <li><a href="sell.php" class="btn btn-primary"><span class="icon">+</span> Jual/Donasi</a></li>
+                    <li><a href="wishlist.php"><span class="icon">♡</span></a></li>
                     <li>
                         <a href="cart.php" class="cart-badge">
-                            <i class="fas fa-shopping-cart"></i>
+                            <span class="icon">🛒</span>
                             <?php if ($cart_count > 0): ?>
                                 <span class="badge"><?= $cart_count ?></span>
                             <?php endif; ?>
                         </a>
                     </li>
-                    <li><a href="dashboard.php"><i class="fas fa-user"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php"><span class="icon">👤</span> Dashboard</a></li>
                     <li><a href="logout.php">Keluar</a></li>
                 <?php else: ?>
                     <li><a href="login.php">Masuk</a></li>
@@ -80,93 +94,105 @@ if (isLoggedIn()) {
             </ul>
 
             <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
+                <span class="hamburger">☰</span>
             </button>
+        </div>
+
+        <div class="mobile-menu">
+            <ul class="nav-menu">
+                <li><a href="products.php">Semua Produk</a></li>
+                <?php if (isLoggedIn()): ?>
+                    <li><a href="sell.php"><span class="icon">+</span> Jual/Donasi</a></li>
+                    <li><a href="wishlist.php"><span class="icon">♡</span> Wishlist</a></li>
+                    <li><a href="cart.php"><span class="icon">🛒</span> Keranjang (<?= $cart_count ?>)</a></li>
+                    <li><a href="dashboard.php"><span class="icon">👤</span> Dashboard</a></li>
+                    <li><a href="logout.php">Keluar</a></li>
+                <?php else: ?>
+                    <li><a href="login.php">Masuk</a></li>
+                    <li><a href="register.php">Daftar</a></li>
+                <?php endif; ?>
+            </ul>
         </div>
     </nav>
 
-    <div class="container" style="margin-top: 2rem;">
-        <!-- Header -->
-        <div class="mb-4">
-            <h1>Semua Produk</h1>
-            <p class="text-muted">Temukan barang preloved berkualitas dari komunitas mahasiswa</p>
+    <main class="container" style="margin-top: 2rem;">
+        <div class="breadcrumb">
+            <a href="index.php">Beranda</a>
+            <span class="separator">></span>
+            <span>Semua Produk</span>
         </div>
 
-        <!-- Filters -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <form method="GET" class="d-flex" style="gap: 1rem; flex-wrap: wrap; align-items: end;">
-                    <div class="form-group" style="margin-bottom: 0; min-width: 200px;">
-                        <label class="form-label">Kategori</label>
-                        <select name="kategori" class="form-control form-select">
-                            <option value="">Semua Kategori</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat['id_kategori'] ?>" <?= $kategori == $cat['id_kategori'] ? 'selected' : '' ?>>
-                                    <?= $cat['nama_kategori'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 0; min-width: 150px;">
-                        <label class="form-label">Tipe</label>
-                        <select name="tipe" class="form-control form-select">
-                            <option value="">Semua Tipe</option>
-                            <option value="jual" <?= $tipe === 'jual' ? 'selected' : '' ?>>Dijual</option>
-                            <option value="donasi" <?= $tipe === 'donasi' ? 'selected' : '' ?>>Donasi</option>
-                        </select>
-                    </div>
-
-                    <?php if ($search): ?>
-                        <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
-                    <?php endif; ?>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                    
-                    <a href="products.php" class="btn btn-outline">
-                        <i class="fas fa-times"></i> Reset
-                    </a>
-                </form>
+        <div class="d-flex justify-between align-center mb-4">
+            <div>
+                <h1>Semua Produk</h1>
+                <p class="text-muted">Ditemukan <?= count($products) ?> produk</p>
             </div>
         </div>
 
-        <!-- Results -->
-        <div class="mb-4">
-            <p class="text-muted">
-                Menampilkan <?= count($products) ?> produk
-                <?php if ($search): ?>
-                    untuk pencarian "<?= htmlspecialchars($search) ?>"
-                <?php endif; ?>
-            </p>
+        <!-- Filter Section -->
+        <div class="filter-section mb-4">
+            <form action="products.php" method="GET" class="filter-form">
+                <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+                
+                <div class="filter-group">
+                    <label>Kategori:</label>
+                    <select name="kategori" onchange="this.form.submit()">
+                        <option value="">Semua Kategori</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?= $cat['id_kategori'] ?>" <?= $kategori == $cat['id_kategori'] ? 'selected' : '' ?>>
+                                <?= getCategoryEmoji($cat['nama_kategori']) ?> <?= $cat['nama_kategori'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Tipe:</label>
+                    <select name="tipe" onchange="this.form.submit()">
+                        <option value="">Semua Tipe</option>
+                        <option value="jual" <?= $tipe == 'jual' ? 'selected' : '' ?>>Dijual</option>
+                        <option value="donasi" <?= $tipe == 'donasi' ? 'selected' : '' ?>>Gratis/Donasi</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Kondisi:</label>
+                    <select name="kondisi" onchange="this.form.submit()">
+                        <option value="">Semua Kondisi</option>
+                        <option value="Baru" <?= $kondisi == 'Baru' ? 'selected' : '' ?>>Baru</option>
+                        <option value="Sangat Baik" <?= $kondisi == 'Sangat Baik' ? 'selected' : '' ?>>Sangat Baik</option>
+                        <option value="Baik" <?= $kondisi == 'Baik' ? 'selected' : '' ?>>Baik</option>
+                        <option value="Cukup" <?= $kondisi == 'Cukup' ? 'selected' : '' ?>>Cukup</option>
+                    </select>
+                </div>
+
+                <button type="button" onclick="window.location.href='products.php'" class="btn btn-outline">Reset</button>
+            </form>
         </div>
 
         <!-- Products Grid -->
-        <?php if (empty($products)): ?>
-            <div class="text-center" style="padding: 3rem 0;">
-                <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
-                <h3>Tidak ada produk ditemukan</h3>
-                <p class="text-muted">Coba ubah filter pencarian atau kata kunci</p>
-                <a href="products.php" class="btn btn-primary">Lihat Semua Produk</a>
-            </div>
-        <?php else: ?>
-            <div class="product-grid">
+        <div class="product-grid">
+            <?php if (empty($products)): ?>
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <h3>Tidak ada produk ditemukan</h3>
+                    <p>Coba ubah filter pencarian Anda</p>
+                    <a href="products.php" class="btn btn-primary">Lihat Semua Produk</a>
+                </div>
+            <?php else: ?>
                 <?php foreach ($products as $item): ?>
                     <div class="card">
                         <div style="position: relative;">
-                            <img src="<?= $item['foto1'] ? 'uploads/produk/' . $item['foto1'] : 'assets/images/no-image.jpg' ?>" 
-                                 alt="<?= htmlspecialchars($item['judul']) ?>" class="card-img">
+                                                     <img src="<?= $item['foto1'] ? 'uploads/produk/' . $item['foto1'] : 'assets/images/no-image.svg' ?>" 
+                              alt="<?= htmlspecialchars($item['judul']) ?>" class="card-img">
                             
-                            <!-- Corner Ribbon -->
                             <div class="ribbon <?= $item['tipe_barang'] === 'donasi' ? 'free' : '' ?>">
                                 <span><?= $item['tipe_barang'] === 'donasi' ? 'GRATIS' : 'DIJUAL' ?></span>
                             </div>
 
-                            <!-- Wishlist Button -->
                             <?php if (isLoggedIn()): ?>
                                 <button class="wishlist-btn" data-product-id="<?= $item['id_produk'] ?>">
-                                    <i class="far fa-heart"></i>
+                                    <span class="heart">♡</span>
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -187,22 +213,65 @@ if (isLoggedIn()) {
                             <?php endif; ?>
 
                             <div class="card-location">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="location-icon">📍</span>
                                 <span><?= htmlspecialchars($item['lokasi_penjual']) ?></span>
                             </div>
 
                             <div class="card-footer">
                                 <span class="card-seller">oleh <?= htmlspecialchars($item['nama_penjual']) ?></span>
                                 <a href="product.php?id=<?= $item['id_produk'] ?>" class="btn btn-primary">
-                                    <i class="fas fa-eye"></i> Lihat
+                                    <span class="view-icon">👁</span> Lihat
                                 </a>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="logo-font">K<span class="heart">❤️</span>sMarket</h3>
+                    <p>Platform jual-beli dan donasi barang preloved khusus untuk komunitas mahasiswa dan penghuni kos.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Menu Utama</h3>
+                    <ul>
+                        <li><a href="products.php">Semua Produk</a></li>
+                        <li><a href="sell.php">Jual/Donasi</a></li>
+                        <li><a href="about.php">Tentang Kami</a></li>
+                        <li><a href="contact.php">Kontak</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Kategori</h3>
+                    <ul>
+                        <?php foreach (array_slice($categories, 0, 4) as $category): ?>
+                            <li><a href="products.php?kategori=<?= $category['id_kategori'] ?>"><?= $category['nama_kategori'] ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Kontak</h3>
+                    <ul>
+                        <li><span class="contact-icon">📧</span> info@kosmarket.com</li>
+                        <li><span class="contact-icon">📞</span> +62 812-3456-7890</li>
+                        <li><span class="contact-icon">📍</span> Malang, Jawa Timur</li>
+                    </ul>
+                </div>
             </div>
-        <?php endif; ?>
-    </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 KosMarket. Dibuat dengan <span style="color: #e74c3c;">❤️</span> untuk komunitas mahasiswa.</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="assets/js/script.js"></script>
 </body>

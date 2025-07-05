@@ -27,7 +27,7 @@ class Product {
         ]);
     }
 
-    public function getAll($limit = null, $search = null, $kategori = null, $tipe = null, $user_id = null) {
+    public function getAll($limit = null, $search = null, $kategori = null, $tipe = null, $kondisi = null, $user_id = null) {
         $sql = "SELECT p.*, k.nama_kategori, u.nama as nama_penjual, u.lokasi_kos as lokasi_penjual, u.nomor_wa 
                 FROM " . $this->table . " p 
                 LEFT JOIN kategori k ON p.id_kategori = k.id_kategori 
@@ -50,6 +50,11 @@ class Product {
         if ($tipe) {
             $sql .= " AND p.tipe_barang = ?";
             $params[] = $tipe;
+        }
+        
+        if ($kondisi) {
+            $sql .= " AND p.kondisi = ?";
+            $params[] = $kondisi;
         }
         
         if ($user_id) {
@@ -193,6 +198,29 @@ class Product {
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$kategori_id, $produk_id, $limit]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getByCategory($kategori_id, $limit = 4, $exclude_id = null) {
+        $sql = "SELECT p.*, k.nama_kategori, u.nama as nama_penjual, u.lokasi_kos as lokasi_penjual, u.nomor_wa 
+                FROM " . $this->table . " p 
+                LEFT JOIN kategori k ON p.id_kategori = k.id_kategori 
+                LEFT JOIN users u ON p.id_user = u.id_user 
+                WHERE p.id_kategori = ? AND p.status = 'tersedia'";
+        
+        $params = [$kategori_id];
+        
+        if ($exclude_id) {
+            $sql .= " AND p.id_produk != ?";
+            $params[] = $exclude_id;
+        }
+        
+        $sql .= " ORDER BY p.created_at DESC LIMIT ?";
+        $params[] = $limit;
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
