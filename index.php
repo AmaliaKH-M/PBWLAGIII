@@ -1,30 +1,8 @@
 <?php
 session_start();
 require_once 'config/kosmarket_db.php';
+require_once 'config/helpers.php';
 require_once 'classes/Product.php';
-
-// Helper functions
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
-}
-
-function formatRupiah($angka) {
-    return 'Rp ' . number_format($angka, 0, ',', '.');
-}
-
-function getCategoryEmoji($category) {
-    $emojis = [
-        'Elektronik' => '📱',
-        'Pakaian' => '👕',
-        'Buku & Alat Tulis' => '📚',
-        'Furniture' => '🪑',
-        'Peralatan Dapur' => '🍳',
-        'Olahraga' => '⚽',
-        'Kecantikan' => '💄',
-        'Lainnya' => '📦'
-    ];
-    return $emojis[$category] ?? '📦';
-}
 
 $database = new Database();
 $db = $database->getConnection();

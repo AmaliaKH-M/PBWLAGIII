@@ -22,12 +22,20 @@
 ### File: `config/kosmarket_db.php`
 ```php
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";        // Sesuaikan dengan password MySQL Anda
-$database = "kosmarket_db";
+class Database {
+    private $host = 'localhost';
+    private $db_name = 'kosmarket_db';
+    private $username = 'root';
+    private $password = '';        // Sesuaikan dengan password MySQL Anda
+    // ... kode lainnya
+}
 ?>
 ```
+
+### ⚠️ **PENTING - Error "Cannot redeclare function" sudah diperbaiki!**
+- Semua helper functions sekarang di file terpisah: `config/helpers.php`
+- Tidak ada lagi duplikasi function di multiple files
+- Gunakan `require_once 'config/helpers.php';` di setiap file yang membutuhkan helper functions
 
 ## 🧪 **3. Test Login**
 
@@ -44,7 +52,8 @@ $database = "kosmarket_db";
 ```
 kosmarket/
 ├── config/
-│   └── kosmarket_db.php
+│   ├── kosmarket_db.php    ← Database connection class
+│   └── helpers.php         ← Helper functions (formatRupiah, etc)
 ├── classes/
 │   ├── User.php
 │   ├── Product.php
@@ -53,20 +62,20 @@ kosmarket/
 │   └── Transaction.php
 ├── assets/
 │   ├── css/
-│   │   └── style.css
+│   │   └── style.css       ← Pure CSS styling
 │   ├── js/
-│   │   └── script.js
+│   │   └── script.js       ← Vanilla JavaScript
 │   └── images/
-│       └── no-image.svg
+│       └── no-image.svg    ← Placeholder image
 ├── uploads/
-│   └── produk/
-├── index.php
-├── login.php
-├── register.php
-├── logout.php
-├── products.php
-├── product.php
-└── kosmarket_db_simple.sql
+│   └── produk/            ← Folder untuk foto produk
+├── index.php             ← Halaman utama
+├── login.php             ← Halaman login
+├── register.php          ← Halaman register
+├── logout.php            ← Logout script
+├── products.php          ← Halaman semua produk + filter
+├── product.php           ← Detail produk + WhatsApp link
+└── kosmarket_db_simple.sql ← Database SQL file
 ```
 
 ## ✅ **5. Fitur yang Sudah Berfungsi**

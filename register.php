@@ -1,15 +1,11 @@
 <?php
 session_start();
 require_once 'config/kosmarket_db.php';
+require_once 'config/helpers.php';
 require_once 'classes/User.php';
 
 $error = '';
 $success = '';
-
-// Email validation function for STIS emails (9 digits)
-function validateSTISEmail($email) {
-    return preg_match('/^[0-9]{9}@stis\.ac\.id$/', $email);
-}
 
 if ($_POST) {
     $database = new Database();
