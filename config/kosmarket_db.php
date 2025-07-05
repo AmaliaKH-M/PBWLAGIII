@@ -32,15 +32,15 @@ function formatRupiah($angka) {
 }
 
 function generateAngkatan($email) {
-    // Extract angkatan from email format: 12345678@stis.ac.id
-    if (preg_match('/^(\d{8})@stis\.ac\.id$/', $email, $matches)) {
+    // Extract angkatan from email format: 123456789@stis.ac.id (9 digit)
+    if (preg_match('/^(\d{9})@stis\.ac\.id$/', $email, $matches)) {
         return substr($matches[1], 0, 2);
     }
     return '00';
 }
 
 function validateSTISEmail($email) {
-    return preg_match('/^[0-9]{8}@stis\.ac\.id$/', $email);
+    return preg_match('/^[0-9]{9}@stis\.ac\.id$/', $email);
 }
 
 function timeAgo($datetime) {

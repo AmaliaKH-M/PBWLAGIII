@@ -1,4 +1,4 @@
-THIS SHOULD BE A LINTER ERROR<?php
+<?php
 class Product {
     private $conn;
     private $table = 'produk';
@@ -229,7 +229,7 @@ class Product {
     }
 
     public function getPopularProducts($limit = 10) {
-        $sql = "SELECT p.*, k.nama_kategori, u.nama as nama_penjual, u.lokasi_kos as lokasi_penjual, u.angkatan 
+        $sql = "SELECT p.*, k.nama_kategori, u.nama as nama_penjual, u.lokasi_kos as lokasi_penjual 
                 FROM " . $this->table . " p 
                 LEFT JOIN kategori k ON p.id_kategori = k.id_kategori 
                 LEFT JOIN users u ON p.id_user = u.id_user 

@@ -124,19 +124,19 @@ INSERT INTO `kategori` (`nama_kategori`, `deskripsi`, `icon`, `color`) VALUES
 ('Makanan & Minuman', 'Snack, minuman, dan makanan kering', 'utensils', '#E5989B'),
 ('Lainnya', 'Barang-barang lain yang tidak masuk kategori di atas', 'box', '#B5828C');
 
--- Sample users (minimal 10 data - TANPA ANGKATAN)
+-- Sample users (minimal 10 data - 9 DIGIT EMAIL)
 INSERT INTO `users` (`nama`, `email`, `password`, `nomor_wa`, `lokasi_kos`, `role`) VALUES
 ('Admin KosMarket', 'admin@kosmarket.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234567890', 'Kampus STIS', 'admin'),
-('Andi Pratama', '22161001@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456789', 'Kos Putri Melati - Jl. Otto Iskandardinata', 'user'),
-('Budi Santoso', '22161002@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456790', 'Kos Putra Anggrek - Jl. Raya Cipayung', 'user'),
-('Citra Dewi', '22161003@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456791', 'Kos Wisma Indah - Jl. Raya Pondok Gede', 'user'),
-('Dedi Kurniawan', '21161004@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456792', 'Kos Griya Asri - Jl. Raya Bogor', 'user'),
-('Eka Sari', '21161005@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456793', 'Kos Harmoni - Jl. Raya Cibinong', 'user'),
-('Fajar Ahmad', '23161006@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456794', 'Kos Sari Indah - Jl. Raya Citeureup', 'user'),
-('Gita Permata', '23161007@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456795', 'Kos Bunga Mawar - Jl. Raya Sentul', 'user'),
-('Hendra Wijaya', '20161008@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456796', 'Kos Permata Hijau - Jl. Raya Gunung Putri', 'user'),
-('Indira Salsabila', '20161009@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456797', 'Kos Dahlia - Jl. Raya Tajur', 'user'),
-('Joko Susilo', '19161010@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456798', 'Kos Cemara - Jl. Raya Warung Nangka', 'user');
+('Andi Pratama', '222161001@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456789', 'Kos Putri Melati - Jl. Otto Iskandardinata', 'user'),
+('Budi Santoso', '222161002@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456790', 'Kos Putra Anggrek - Jl. Raya Cipayung', 'user'),
+('Citra Dewi', '222161003@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456791', 'Kos Wisma Indah - Jl. Raya Pondok Gede', 'user'),
+('Dedi Kurniawan', '221161004@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456792', 'Kos Griya Asri - Jl. Raya Bogor', 'user'),
+('Eka Sari', '221161005@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456793', 'Kos Harmoni - Jl. Raya Cibinong', 'user'),
+('Fajar Ahmad', '223161006@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456794', 'Kos Sari Indah - Jl. Raya Citeureup', 'user'),
+('Gita Permata', '223161007@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456795', 'Kos Bunga Mawar - Jl. Raya Sentul', 'user'),
+('Hendra Wijaya', '220161008@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456796', 'Kos Permata Hijau - Jl. Raya Gunung Putri', 'user'),
+('Indira Salsabila', '220161009@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456797', 'Kos Dahlia - Jl. Raya Tajur', 'user'),
+('Joko Susilo', '219161010@stis.ac.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '082123456798', 'Kos Cemara - Jl. Raya Warung Nangka', 'user');
 
 -- Sample products (minimal 15 data for variety)
 INSERT INTO `produk` (`id_user`, `id_kategori`, `judul`, `deskripsi`, `harga`, `harga_asli`, `kondisi`, `tipe_barang`, `foto1`, `status`) VALUES

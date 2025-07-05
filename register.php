@@ -21,7 +21,7 @@ if ($_POST) {
     if (empty($nama) || empty($email) || empty($password) || empty($nomor_wa) || empty($lokasi_kos)) {
         $error = 'Semua field harus diisi';
     } elseif (!validateSTISEmail($email)) {
-        $error = 'Email harus menggunakan format [8 digit NIM]@stis.ac.id';
+        $error = 'Email harus menggunakan format [9 digit NIM]@stis.ac.id';
     } elseif ($password !== $confirm_password) {
         $error = 'Password tidak cocok';
     } elseif (strlen($password) < 6) {
@@ -83,8 +83,8 @@ if ($_POST) {
 
                     <div class="form-group">
                         <label class="form-label">Email STIS</label>
-                        <input type="email" name="email" class="form-control" placeholder="12345678@stis.ac.id" required value="<?= $_POST['email'] ?? '' ?>">
-                        <small class="form-text text-muted">Gunakan format: [8 digit NIM]@stis.ac.id</small>
+                        <input type="email" name="email" class="form-control" placeholder="222312964@stis.ac.id" required value="<?= $_POST['email'] ?? '' ?>">
+                        <small class="form-text text-muted">Gunakan format: [9 digit NIM]@stis.ac.id</small>
                     </div>
 
                     <div class="form-group">

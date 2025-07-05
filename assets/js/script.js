@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
     emailInputs.forEach(input => {
         input.addEventListener('blur', function() {
             if (this.value && !validateSTISEmail(this.value)) {
-                this.setCustomValidity('Format email harus: [8 digit NIM]@stis.ac.id');
+                this.setCustomValidity('Format email harus: [9 digit NIM]@stis.ac.id');
                 this.reportValidity();
             } else {
                 this.setCustomValidity('');
@@ -202,9 +202,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Email validation function
+// Email validation function (9 digit)
 function validateSTISEmail(email) {
-    const regex = /^[0-9]{8}@stis\.ac\.id$/;
+    const regex = /^[0-9]{9}@stis\.ac\.id$/;
     return regex.test(email);
 }
 
@@ -224,7 +224,7 @@ function validateForm(form) {
         // Email validation
         if (input.type === 'email' && input.value && !validateSTISEmail(input.value)) {
             isValid = false;
-            showFieldError(input, 'Format email harus: [8 digit NIM]@stis.ac.id');
+            showFieldError(input, 'Format email harus: [9 digit NIM]@stis.ac.id');
         }
 
         // Password validation
